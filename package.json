@@ -10,9 +10,9 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,yaml,yml}\"",
     "type-check": "turbo run type-check",
     "test": "turbo run test",
-    "db:up": "docker-compose up -d postgres redis",
-    "docker:up": "docker-compose up -d",
-    "docker:down": "docker-compose down"
+    "db:up": "docker compose up -d postgres redis",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^8.0.0",

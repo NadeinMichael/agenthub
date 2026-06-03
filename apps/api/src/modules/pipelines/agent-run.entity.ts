@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 
 import { AgentEntity } from '../agents/agent.entity';
+import type { PipelineRunEntity } from './pipeline-run.entity';
 
 export enum AgentRunStatus {
   PENDING = 'pending',
@@ -21,12 +22,22 @@ export class AgentRunEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column()
-  agentId!: string;
+  @Column({ nullable: true })
+  agentId!: string | null;
 
-  @ManyToOne(() => AgentEntity, { onDelete: 'CASCADE' })
+  @ManyToOne(() => AgentEntity, { onDelete: 'CASCADE', nullable: true })
   @JoinColumn({ name: 'agentId' })
-  agent!: AgentEntity;
+  agent!: AgentEntity | null;
+
+  @Column({ nullable: true })
+  pipelineRunId!: string | null;
+
+  @ManyToOne('PipelineRunEntity', 'agentRuns', { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'pipelineRunId' })
+  pipelineRun!: PipelineRunEntity | null;
+
+  @Column({ type: 'text', nullable: true })
+  agentRole!: string | null;
 
   @Column({ type: 'text' })
   task!: string;

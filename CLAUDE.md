@@ -91,3 +91,17 @@ pnpm dev
 
 - API: Jest + `@nestjs/testing` — files named `*.spec.ts`
 - Run: `pnpm test` (all) or `cd apps/api && pnpm test`
+
+### Test User
+When creating test endpoints, ALWAYS use an existing user—do not register a new one.
+
+Login: POST /api/v1/auth/login
+```json
+{
+"email": "test@test.com",
+"password": "Test1234!"
+}
+```
+
+Get a token and use it for all requests.
+Never use POST /api/v1/auth/register for testing.

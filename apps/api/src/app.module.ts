@@ -3,13 +3,17 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { AgentsModule } from './modules/agents/agents.module';
+import { AuthModule } from './modules/auth/auth.module';
 import { HealthModule } from './modules/health/health.module';
+import { PipelinesModule } from './modules/pipelines/pipelines.module';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env.local', '.env'],
+      envFilePath: ['.env.local', '.env', '../../.env.local', '../../.env'],
     }),
     ThrottlerModule.forRoot([
       { name: 'short', ttl: 1000, limit: 10 },
@@ -31,6 +35,10 @@ import { HealthModule } from './modules/health/health.module';
       inject: [ConfigService],
     }),
     HealthModule,
+    UsersModule,
+    AuthModule,
+    AgentsModule,
+    PipelinesModule,
   ],
 })
 export class AppModule {}
