@@ -74,9 +74,8 @@ export class SchedulerService implements OnApplicationBootstrap {
     }
 
     const task =
-      typeof agent.config?.['scheduledTask'] === 'string'
-        ? (agent.config['scheduledTask'] as string)
-        : 'Perform your scheduled task.';
+      agent.description?.trim() ||
+      'Проверь статус проекта и сообщи об изменениях';
 
     const run = await this.runRepo.save(
       this.runRepo.create({ agentId: agent.id, task, status: AgentRunStatus.PENDING }),
