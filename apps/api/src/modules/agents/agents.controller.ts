@@ -56,6 +56,12 @@ export class AgentsController {
     return this.agentsService.findAllByUser(user.id);
   }
 
+  @Get('runs')
+  @ApiOkResponse({ description: 'Last 20 runs across all agents for the current user', type: [AgentRunEntity] })
+  getRecentRuns(@CurrentUser() user: JwtUser): Promise<AgentRunEntity[]> {
+    return this.schedulerService.getRecentRunsByUser(user.id);
+  }
+
   @Get(':id')
   @ApiOkResponse({ description: 'Agent details', type: AgentEntity })
   @ApiNotFoundResponse({ description: 'Agent not found' })

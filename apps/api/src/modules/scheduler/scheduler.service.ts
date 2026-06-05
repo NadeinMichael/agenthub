@@ -66,6 +66,16 @@ export class SchedulerService implements OnApplicationBootstrap {
     });
   }
 
+  getRecentRunsByUser(userId: string, limit = 20): Promise<AgentRunEntity[]> {
+    return this.runRepo
+      .createQueryBuilder('run')
+      .leftJoinAndSelect('run.agent', 'agent')
+      .where('agent.userId = :userId', { userId })
+      .orderBy('run.createdAt', 'DESC')
+      .take(limit)
+      .getMany();
+  }
+
   private async triggerRun(agentId: string): Promise<void> {
     const agent = await this.agentRepo.findOneBy({ id: agentId });
     if (!agent) {
