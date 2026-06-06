@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectDataSource } from '@nestjs/typeorm';
 import Groq from 'groq-sdk';
 import * as fs from 'fs/promises';
@@ -107,12 +108,15 @@ const TOOLS: Groq.Chat.ChatCompletionTool[] = [
 @Injectable()
 export class AgentExecutorService {
   private readonly logger = new Logger(AgentExecutorService.name);
-  private readonly groq = new Groq({ apiKey: process.env['GROQ_API_KEY'] });
+  private readonly groq: Groq;
 
   constructor(
     @InjectDataSource()
     private readonly dataSource: DataSource,
-  ) {}
+    private readonly config: ConfigService,
+  ) {
+    this.groq = new Groq({ apiKey: config.getOrThrow<string>('GROQ_API_KEY') });
+  }
 
   async execute(agent: AgentSpec, task: string): Promise<string> {
     const sandboxDir = getSandboxDir();

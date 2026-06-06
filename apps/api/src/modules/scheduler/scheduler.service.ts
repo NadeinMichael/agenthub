@@ -83,9 +83,7 @@ export class SchedulerService implements OnApplicationBootstrap {
       return;
     }
 
-    const task =
-      agent.description?.trim() ||
-      'Проверь статус проекта и сообщи об изменениях';
+    const task = agent.description?.trim() || 'Check project status and report on changes';
 
     const run = await this.runRepo.save(
       this.runRepo.create({ agentId: agent.id, task, status: AgentRunStatus.PENDING }),

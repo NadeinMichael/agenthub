@@ -105,3 +105,10 @@ Login: POST /api/v1/auth/login
 
 Get a token and use it for all requests.
 Never use POST /api/v1/auth/register for testing.
+
+### Terminal Output
+- Don't output file contents or code blocks to the terminal
+- After changes, only show a brief summary: what was changed and why
+- Report format: file name + one line of change description
+- Don't duplicate code already written in files
+EOF

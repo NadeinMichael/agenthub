@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import Groq from 'groq-sdk';
 import type { Repository } from 'typeorm';
@@ -44,7 +45,7 @@ const REVIEW_AGENT: AgentSpec = {
 @Injectable()
 export class MultiAgentOrchestratorService {
   private readonly logger = new Logger(MultiAgentOrchestratorService.name);
-  private readonly groq = new Groq({ apiKey: process.env['GROQ_API_KEY'] });
+  private readonly groq: Groq;
 
   constructor(
     @InjectRepository(AgentRunEntity)
@@ -52,7 +53,10 @@ export class MultiAgentOrchestratorService {
     @InjectRepository(PipelineRunEntity)
     private readonly pipelineRunRepo: Repository<PipelineRunEntity>,
     private readonly executor: AgentExecutorService,
-  ) {}
+    private readonly config: ConfigService,
+  ) {
+    this.groq = new Groq({ apiKey: config.getOrThrow<string>('GROQ_API_KEY') });
+  }
 
   async runMulti(task: string): Promise<PipelineRunEntity> {
     const pipelineRun = await this.pipelineRunRepo.save(

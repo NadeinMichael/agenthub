@@ -1,16 +1,10 @@
-import { type ArgumentsHost, Catch, type ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
-
-interface FastifyReply {
-  status(code: number): this;
-  send(payload: unknown): this;
-}
-
-interface FastifyRequest {
-  url: string;
-}
+import { type ArgumentsHost, Catch, type ExceptionFilter, HttpException, HttpStatus, Logger } from '@nestjs/common';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
+  private readonly logger = new Logger(HttpExceptionFilter.name);
+
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<FastifyReply>();
@@ -19,14 +13,21 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const status =
       exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    const message =
-      exception instanceof HttpException
-        ? exception.getResponse()
-        : 'Internal server error';
+    if (status >= 500) {
+      this.logger.error(exception instanceof Error ? exception.message : String(exception));
+    }
 
-    response.status(status).send({
+    const rawResponse =
+      exception instanceof HttpException ? exception.getResponse() : 'Internal server error';
+
+    const message =
+      typeof rawResponse === 'object'
+        ? ((rawResponse as Record<string, unknown>)['message'] ?? rawResponse)
+        : rawResponse;
+
+    void response.status(status).send({
       statusCode: status,
-      message: typeof message === 'object' ? (message as Record<string, unknown>)['message'] ?? message : message,
+      message,
       timestamp: new Date().toISOString(),
       path: request.url,
     });

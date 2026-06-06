@@ -2,11 +2,11 @@ export interface User {
   id: string;
   email: string;
   name: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface CreateUserDto {
+export interface RegisterDto {
   email: string;
   name: string;
   password: string;
@@ -17,7 +17,6 @@ export interface LoginDto {
   password: string;
 }
 
-export interface AuthTokens {
+export interface AuthResponse {
   accessToken: string;
-  refreshToken: string;
 }
